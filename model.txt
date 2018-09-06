@@ -1,0 +1,233 @@
+# coding: utf-8
+from sqlalchemy import Boolean, CHAR, Column, Date, DateTime, Enum, Float, Integer, SmallInteger, Table, Text, Time, text
+from sqlalchemy.dialects.postgresql.base import UUID
+from sqlalchemy.dialects.postgresql.json import JSONB
+from sqlalchemy.dialects.postgresql.ranges import TSRANGE
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+metadata = Base.metadata
+
+
+class Ambar(Base):
+    __tablename__ = 'ambar'
+
+    id = Column(UUID, primary_key=True)
+    ambar = Column(Text)
+    tanim = Column(Text)
+    net_bayrak = Column(Boolean)
+    ols_trh = Column(DateTime)
+    sil_trh = Column(DateTime)
+    gnc_trh = Column(DateTime, server_default=text("now()"))
+
+
+class AmbarDetay(Base):
+    __tablename__ = 'ambar_detay'
+
+    id = Column(UUID, primary_key=True)
+    ambar_id = Column(UUID)
+    parca = Column(UUID)
+    eldeki = Column(Float(53))
+    net_bayrak = Column(Boolean)
+    lokasyon = Column(Text)
+    ols_trh = Column(DateTime)
+    sil_trh = Column(DateTime)
+    gnc_trh = Column(DateTime, server_default=text("now()"))
+
+
+class AmbarGecmişi(Base):
+    __tablename__ = 'ambar_gecmi\u015fi'
+
+    id = Column(UUID, primary_key=True)
+    emir_id = Column(UUID)
+    emir_turu = Column(Enum('TAHMİN', 'SİPARİŞ', 'ÇİZELGE', 'PLANLI', 'İMALAT', 'İSTEM', 'ALIM', 'SERVIS', name='e_emir_turu'))
+    parca_id = Column(UUID)
+    kullanici = Column(UUID)
+    tur = Column(Enum('GİRİŞ', 'ÇIKIŞ', 'SEVK', 'TRANSFER ÇIKIŞ', 'TRANSFER GİRİŞ', 'AYARLAMA', 'DEVRESEL SAYIM', name='e_hareket_turu'))
+    hrk_mkt = Column(Float)
+    myt = Column(Float)
+    eldeki = Column(Float(53))
+    isl_trh = Column(DateTime, server_default=text("now()"))
+    jdata = Column(JSONB(astext_type=Text()))
+
+
+class Cari(Base):
+    __tablename__ = 'cari'
+
+    id = Column(UUID, primary_key=True)
+    unvan = Column(Text)
+    durum = Column(CHAR(1))
+    firma_turu = Column(CHAR(1))
+    telefon = Column(Text)
+    fax = Column(Text)
+    adres = Column(Text)
+    ilce = Column(Text)
+    il = Column(Text)
+    ulke = Column(Text)
+    para_brm = Column(Enum('TL', 'EURO', 'DOLAR', name='e_para_brm'))
+    vergi_no = Column(Text)
+    muhayyer_sevk = Column(UUID)
+    muhasebe_kodu = Column(Text)
+    ols_trh = Column(DateTime)
+    sil_trh = Column(DateTime)
+    gnc_trh = Column(DateTime, server_default=text("now()"))
+
+
+class Emir(Base):
+    __tablename__ = 'emir'
+
+    id = Column(UUID, primary_key=True)
+    emir_turu = Column(Enum('TAHMİN', 'SİPARİŞ', 'ÇİZELGE', 'PLANLI', 'İMALAT', 'İSTEM', 'ALIM', 'SERVIS', name='e_emir_turu'))
+    emir = Column(Text)
+    parca_id = Column(Integer)
+    durum = Column(Enum('PLANLI', 'ONAYLI', 'AÇIK', 'TAMAMLANMIŞ', 'KAPATILMIŞ', 'İPTAL', name='e_emir_statu'))
+    maliyet = Column(Float)
+    orj_mkt = Column(Float)
+    mkt = Column(Float)
+    bakiye = Column(Float)
+    orj_tslm_trh = Column(Date)
+    teslim_trh = Column(Date)
+    ols_trh = Column(DateTime)
+    sil_trh = Column(DateTime)
+    gnc_trh = Column(DateTime, server_default=text("now()"))
+
+
+t_ihtiyac = Table(
+    'ihtiyac', metadata,
+    Column('id', UUID),
+    Column('emir_id', UUID),
+    Column('parca_id', UUID),
+    Column('durum', Enum('PLANLI', 'ONAYLI', 'AÇIK', 'TAMAMLANMIŞ', 'KAPATILMIŞ', 'İPTAL', name='e_emir_statu')),
+    Column('orj_mkt', Float),
+    Column('mkt', Float),
+    Column('bakiye', Float),
+    Column('cikis_brm_mkt', Float),
+    Column('cikis_mkt', Float),
+    Column('teslim_trh', Date),
+    Column('ols_trh', DateTime),
+    Column('sil_trh', DateTime),
+    Column('gnc_trh', DateTime, server_default=text("now()"))
+)
+
+
+class Parca(Base):
+    __tablename__ = 'parca'
+
+    id = Column(UUID, primary_key=True)
+    parca = Column(Text, nullable=False)
+    aciklama = Column(Text, nullable=False)
+    tur = Column(Enum('MİP İMALAT', 'MİP SATIN ALMA', 'YSN İMALAT', 'YSN SATIN ALMA', 'ANA ÇİZELGE', 'SAHTE', 'FASON', name='e_parca_turu'))
+    sinif_kodu = Column(Enum('A', 'B', 'C', name='e_stok_kodu'))
+    planlayici = Column(UUID)
+    satinalan = Column(UUID)
+    uretim_atolyesi = Column(UUID)
+    urun_grubu = Column(Text)
+    adk = Column(SmallInteger)
+    ua_ob = Column(Enum('ADET', 'KG', 'TON', 'LT', 'MT', 'M2', 'M3', name='e_olcu_birim'))
+    statu = Column(Enum('PASİF', 'AKTİF', name='e_parca_statu'))
+    gecerlilik_trh = Column(TSRANGE)
+    agirlik = Column(Float(53))
+    agirlik_brm = Column(Enum('ADET', 'KG', 'TON', 'LT', 'MT', 'M2', 'M3', name='e_olcu_birim'))
+    revizyon = Column(Text)
+    cizim_no = Column(Text)
+    resim_yolu = Column(Text)
+    birincil_ambar = Column(UUID)
+    verim = Column(SmallInteger)
+    ysn = Column(Float)
+    ysm = Column(Float)
+    emniyet_stok = Column(Float)
+    min_mkt = Column(Float)
+    mak_mkt = Column(Float)
+    coklu_mkt = Column(Float)
+    temin_suresi = Column(Integer)
+    kts = Column(Integer)
+    muhasebe_hesap = Column(Text)
+    maliyet = Column(Float)
+    maliyet_tur = Column(CHAR(1))
+    fiyat = Column(Float)
+    malzeme_myt = Column(Float)
+    ua_malzeme_myt = Column(Float)
+    sure = Column(Time)
+    ua_sure = Column(Time)
+    direk_iscilik_gider = Column(Float)
+    genel_uretim_giderleri = Column(Float)
+    ua_direk_iscilik_gider = Column(Float)
+    ua_genel_uretim_giderleri = Column(Float)
+    maliyet_gunu = Column(DateTime)
+    lot_takib = Column(Boolean)
+    seri_takip = Column(Boolean)
+    raf_omru = Column(Integer)
+    rota_degisim_no = Column(Integer)
+    rota_degisim_trh = Column(DateTime)
+    muhayyer_tedarikci = Column(UUID)
+    ols_trh = Column(DateTime)
+    sil_trh = Column(DateTime)
+    gnc_trh = Column(DateTime, server_default=text("now()"))
+
+
+t_parca_alim = Table(
+    'parca_alim', metadata,
+    Column('id', UUID),
+    Column('parca_id', UUID),
+    Column('cari_id', UUID),
+    Column('fiyat', Float(53)),
+    Column('ols_trh', DateTime),
+    Column('sil_trh', DateTime),
+    Column('gnc_trh', DateTime, server_default=text("now()"))
+)
+
+
+t_sevk_adres = Table(
+    'sevk_adres', metadata,
+    Column('id', UUID),
+    Column('cari_id', UUID),
+    Column('adres_id', Text),
+    Column('fax', Text),
+    Column('adres', Text),
+    Column('ilce', Text),
+    Column('il', Text),
+    Column('ulke', Text),
+    Column('ols_trh', DateTime),
+    Column('sil_trh', DateTime),
+    Column('gnc_trh', DateTime, server_default=text("now()"))
+)
+
+
+t_siparis_detay = Table(
+    'siparis_detay', metadata,
+    Column('id', UUID, nullable=False),
+    Column('emir_turu', Enum('TAHMİN', 'SİPARİŞ', 'ÇİZELGE', 'PLANLI', 'İMALAT', 'İSTEM', 'ALIM', 'SERVIS', name='e_emir_turu')),
+    Column('emir', Text),
+    Column('parca_id', Integer),
+    Column('durum', Enum('PLANLI', 'ONAYLI', 'AÇIK', 'TAMAMLANMIŞ', 'KAPATILMIŞ', 'İPTAL', name='e_emir_statu')),
+    Column('maliyet', Float),
+    Column('orj_mkt', Float),
+    Column('mkt', Float),
+    Column('bakiye', Float),
+    Column('orj_tslm_trh', Date),
+    Column('teslim_trh', Date),
+    Column('ols_trh', DateTime),
+    Column('sil_trh', DateTime),
+    Column('gnc_trh', DateTime, server_default=text("now()")),
+    Column('cari_id', UUID),
+    Column('sip_veren_id', UUID),
+    Column('mus_sip', Text),
+    Column('sevk_adres_id', UUID),
+    Column('temsilci_id', UUID),
+    Column('odeme', Integer),
+    Column('katagori', Text)
+)
+
+
+t_urun_agac = Table(
+    'urun_agac', metadata,
+    Column('id', UUID),
+    Column('ana_parca', UUID),
+    Column('bilesen_parca', UUID),
+    Column('brm_mkt', Float),
+    Column('gecerlilik', TSRANGE),
+    Column('ambar', UUID),
+    Column('ols_trh', DateTime),
+    Column('sil_trh', DateTime),
+    Column('gnc_trh', DateTime, server_default=text("now()"))
+)

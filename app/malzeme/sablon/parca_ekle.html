@@ -1,0 +1,43 @@
+{% extends "base4.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+
+{% block app_content  %}
+
+<h3>Parça Ana Kütüğü - Ekle</h3>
+<p>v1.0</p>
+<hr>
+
+{{ wtf.form_errors(form) }}
+
+<form action="" method="post" class="form" role="form">
+    {{ form.csrf_token() }}
+
+    {{ wtf.form_field(form.parca, class='form-control', placeholder='Parça Kodu', style='text-transform: uppercase;') }}
+    {{ wtf.form_field(form.aciklama, class='form-control', placeholder='Açıklama', style='text-transform: uppercase;') }}
+    <div class="form-row">
+        <div class="col-auto">
+            {{ wtf.form_field(form.tur, class='custom-select', placeholder='Açıklama') }}
+        </div>
+        <div class="col-auto">
+            {{ wtf.form_field(form.sinif_kodu, class='custom-select', placeholder='Açıklama') }}
+        </div>
+        <div class="col-auto">
+            {{ wtf.form_field(form.ua_ob, class='custom-select', placeholder='Ölçü biribi') }}
+        </div>
+        <div class="col-auto">
+            {{ wtf.form_field(form.statu, class='custom-select', placeholder='Parça Durumu') }}
+        </div>
+        <div class="col-auto">
+            {{ wtf.form_field(form.agirlik) }}
+        </div>
+        <div class="col-auto">
+            {{ wtf.form_field(form.agirlik_brm, class='custom-select', placeholder='Parça Durumu') }}
+        </div>
+    </div>
+    <p><input type=submit value="Gönder" class='btn btn-primary btn-block'>
+</form>
+
+<hr>
+<p>Copyright 2018 <a href="https://www.suryazilim.com">SurYazılım</a></p>
+{% endblock %}
