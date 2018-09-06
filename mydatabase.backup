@@ -1,16 +1,3 @@
--- Database: deneme
-
--- DROP DATABASE deneme;
-
-CREATE DATABASE deneme
-  WITH OWNER = postgres
-       ENCODING = 'UTF8'
-       TABLESPACE = pg_default
-       LC_COLLATE = 'tr_TR.UTF-8'
-       LC_CTYPE = 'tr_TR.UTF-8'
-       CONNECTION LIMIT = -1;
-
-
 --
 -- PostgreSQL database dump
 --
@@ -18,7 +5,7 @@ CREATE DATABASE deneme
 -- Dumped from database version 10.5
 -- Dumped by pg_dump version 10.5
 
--- Started on 2018-09-06 19:33:24 +03
+-- Started on 2018-09-06 20:26:24 +03
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -637,7 +624,7 @@ ALTER TABLE ONLY public.parca
     ADD CONSTRAINT parca_pkey PRIMARY KEY (id);
 
 
--- Completed on 2018-09-06 19:33:25 +03
+-- Completed on 2018-09-06 20:26:24 +03
 
 --
 -- PostgreSQL database dump complete
