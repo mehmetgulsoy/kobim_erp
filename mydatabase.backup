@@ -1,3 +1,16 @@
+-- Database: deneme
+
+-- DROP DATABASE deneme;
+
+CREATE DATABASE deneme
+  WITH OWNER = postgres
+       ENCODING = 'UTF8'
+       TABLESPACE = pg_default
+       LC_COLLATE = 'tr_TR.UTF-8'
+       LC_CTYPE = 'tr_TR.UTF-8'
+       CONNECTION LIMIT = -1;
+
+
 --
 -- PostgreSQL database dump
 --
