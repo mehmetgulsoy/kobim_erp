@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/kobim_erp.iml" filepath="$PROJECT_DIR$/.idea/kobim_erp.iml" />
-      <module fileurl="file://$USER_HOME$/Documents/microblog/.idea/microblog.iml" filepath="$USER_HOME$/Documents/microblog/.idea/microblog.iml" />
     </modules>
   </component>
 </project>
