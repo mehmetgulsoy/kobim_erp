@@ -4,45 +4,42 @@
 
 {% block app_content  %}
 
-{% if form %}
-<div class="row bg-light">
-    <div class="col-md-8 order-md-1">
-    <h3>Parça Ana Kütüğü - Arama</h3>
-    {{ wtf.form_errors(form) }}
+<div class="row bg-light px-3">
+    {% if form %}
+    <div class="w-100">
+        <h3>Parça Ana Kütüğü - Arama</h3>
+        {{ wtf.form_errors(form) }}
 
-    <form action="" method="get" class="form" role="form">
-        <br>
-        {{ form.csrf_token() }}
+        <form action="" method="get" class="form" role="form">
+            {{ form.csrf_token() }}
+            {{ wtf.form_field(form.arama, placeholder='Parça Ara') }}
+            <!-- Button -->
+            <div class="form-group">
+                <a href="#" class="btn btn-primary btn-block btn-success"><span class="glyphicon glyphicon-search"></span>
+                    Ara</a>
+            </div>
+        </form>
+    {% endif %}
+    {% if parcalar %}
+        <ul class="list-unstyled">
+        {% for parca in parcalar %}
+            <li class="media {% if loop.first == False and loop.last == False %} my-4 {% endif %}">
+            <img class="mr-3" src="{{ url_for('static', filename= 'resim_parca/' + parca.parca + '.jpg') }}" alt="Resim Yok">
+            <div class="media-body">
+              <h5 class="mt-0 mb-1">{{ parca.parca}}</h5>
+              {{ parca.aciklama}}
+                <a class="d-block" href="{{ url_for('malzeme.parca_guncelle', id=parca.id) }}"><i class="fas fa-tv"></i>Görüntüle</a>
+                <a class="d-block" href="{{ url_for('malzeme.parca_guncelle', id=parca.id) }}"><i class="fas fa-edit"></i>Güncelle</a>
+                <a class="d-block" href="{{ url_for('malzeme.parca_guncelle', id=parca.id) }}"><i class="far fa-trash-alt"></i>Sil</a>
 
-        {{ wtf.form_field(form.arama, placeholder='Parça Ara') }}
-        <!-- Button -->
-        <div class="form-group">
-            <a href="#" class="btn btn-primary btn-block btn-success"><span class="glyphicon glyphicon-search"></span>
-                Ara</a>
-        </div>
 
-    </form>
+            </div>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif%}
     </div>
-
 </div>
-{% endif %}
-
-{% if parcalar %}
-<ul class="list-unstyled">
-{% for parca in parcalar %}
-    <li class="media {% if loop.first == False and loop.last == False %} my-4 {% endif %}">
-    <i class="far fa-image"></i>
-    <img class="mr-3" src=".../64x64" alt="Generic placeholder image">
-    <div class="media-body">
-      <h5 class="mt-0 mb-1">{{ parca.parca}}</h5>
-      {{ parca.aciklama}}
-        <a href="{{ url_for('malzeme.parca_guncelle', id=parca.id) }}">Güncelle</a>
-    </div>
-    </li>
-{% endfor %}
-</ul>
-{% endif%}
-
 <br>
 <hr>
 <p>Copyright 2018 <a href="https://www.suryazilim.com">SurYazılım</a></p>

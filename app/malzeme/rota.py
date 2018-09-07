@@ -35,8 +35,8 @@ def cari():
 @bp.route('/parca_ara', methods=['GET', 'POST'])
 def parca_ara():
     p = Parca.query.all()
-
-    return render_template('parca_ara.html', form=None, parcalar=p)
+    arama_form = MalzemeAramaForm()
+    return render_template('parca_ara.html', form=arama_form, parcalar=p)
 
 
 @bp.route('/parca_ekle', methods=['GET', 'POST'])
@@ -62,11 +62,6 @@ def parca_ekle():
 @bp.route('/parca_guncelle', methods=['GET'])
 @bp.route('/parca_guncelle/<id>', methods=['GET', 'POST'])
 def parca_guncelle(id=None):
-
-    if id is None:
-        arama_form = MalzemeAramaForm()
-        return render_template('parca_ara.html', form=arama_form)
-
     p = Parca.query.filter_by(id=id).first_or_404()
     form = MalzemeForm()
     form.id = p.id
