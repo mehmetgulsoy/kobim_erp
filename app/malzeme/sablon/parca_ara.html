@@ -3,44 +3,92 @@
 
 
 {% block app_content  %}
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+        <button type="button" class="btn btn-primary">Kaydet</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-<div class="row bg-light px-3">
+
+<div class="row bg-light p-3">
     {% if form %}
     <div class="w-100">
         <h3>Parça Ana Kütüğü - Arama</h3>
         {{ wtf.form_errors(form) }}
 
-        <form action="" method="get" class="form" role="form">
+        <form action="" method="post" class="form" role="form">
             {{ form.csrf_token() }}
             {{ wtf.form_field(form.arama, placeholder='Parça Ara') }}
             <!-- Button -->
             <div class="form-group">
-                <a href="#" class="btn btn-primary btn-block btn-success"><span class="glyphicon glyphicon-search"></span>
-                    Ara</a>
+                <input type=submit value="Ara..." class='btn btn-primary btn-block'>
             </div>
         </form>
     {% endif %}
     {% if parcalar %}
-        <ul class="list-unstyled">
-        {% for parca in parcalar %}
-            <li class="media {% if loop.first == False and loop.last == False %} my-4 {% endif %}">
-            <img class="mr-3" src="{{ url_for('static', filename= 'resim_parca/' + parca.parca + '.jpg') }}" alt="Resim Yok">
-            <div class="media-body">
-              <h5 class="mt-0 mb-1">{{ parca.parca}}</h5>
-              {{ parca.aciklama}}
-                <a class="d-block" href="{{ url_for('malzeme.parca_guncelle', id=parca.id) }}"><i class="fas fa-tv"></i>Görüntüle</a>
-                <a class="d-block" href="{{ url_for('malzeme.parca_guncelle', id=parca.id) }}"><i class="fas fa-edit"></i>Güncelle</a>
-                <a class="d-block" href="{{ url_for('malzeme.parca_guncelle', id=parca.id) }}"><i class="far fa-trash-alt"></i>Sil</a>
-
-
-            </div>
-            </li>
-        {% endfor %}
-        </ul>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Parça</th>
+              <th scope="col">Açıklama</th>
+              <th scope="col">Katagori</th>
+              <th scope="col">işlem</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for parca in parcalar %}
+                <tr>
+                  <th scope="row"> {{ loop.index }} </th>
+                  <td>{{ parca.parca }}</td>
+                  <td>{{ parca.aciklama }}</td>
+                  <td>{{ 'Katogori' }}</td>
+                  <td>
+                    <a class="d-block" href="#exampleModal" data-toggle="modal" data-id="{{ parca.id }}" data-islem="Görüntüle"><i class="fas fa-tv"></i>Görüntüle</a>
+                    <a class="d-block" href="#exampleModal" data-toggle="modal" data-id="{{ parca.id }}" data-islem="Güncelle"><i class="fas fa-edit"></i>Güncelle</a>
+                    <a class="d-block" href="#exampleModal" data-toggle="modal" data-id="{{ parca.id }}" data-islem="Sil"><i class="far fa-trash-alt"></i>Sil</a>
+                  </td>
+                </tr>
+            {% endfor %}
+          </tbody>
+        </table>
     {% endif%}
     </div>
 </div>
-<br>
 <hr>
 <p>Copyright 2018 <a href="https://www.suryazilim.com">SurYazılım</a></p>
 {% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        $('#exampleModal').on('show.bs.modal', function (event) {
+        var button  = $(event.relatedTarget) // Button that triggered the modal
+        var id      = button.data('id') // Extract info from data-* attributes
+        var islem   = button.data('islem') // Extract info from data-* attributes
+
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+
+        var modal = $(this)
+        modal.find('.modal-title').text('Yapılacak İşlem: ' + islem)
+        modal.find('.modal-body').text(id)
+        })
+    </script>
+{% endblock %}
+

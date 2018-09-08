@@ -1,3 +1,4 @@
+from sqlalchemy import or_
 from flask import render_template, url_for, flash, redirect
 from app.malzeme import bp
 from app.malzeme.form import CariForm, MalzemeForm, MalzemeAramaForm
@@ -34,8 +35,13 @@ def cari():
 
 @bp.route('/parca_ara', methods=['GET', 'POST'])
 def parca_ara():
-    p = Parca.query.all()
     arama_form = MalzemeAramaForm()
+    p = None
+    if arama_form.validate_on_submit():
+        arama = str(arama_form.arama.data)
+        p = Parca.query.filter(or_(Parca.aciklama.like("%" + arama + "%"), Parca.parca.like("%" + arama + "%"))).all()
+    elif arama_form.is_submitted():
+        flash(arama_form.errors)
     return render_template('parca_ara.html', form=arama_form, parcalar=p)
 
 

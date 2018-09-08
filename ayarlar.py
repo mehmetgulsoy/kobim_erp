@@ -21,3 +21,4 @@ class Congfig(object):
     LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')
     REDIS_URL = os.environ.get('REDIS_URL') or 'redis://'
     FONT_AWESOME_CDN = os.environ.get('FONT_AWESOME_CDN')
+    BOOTSTRAP_SERVE_LOCAL = True
